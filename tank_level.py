@@ -13,6 +13,18 @@ Options:
 
 from docopt import docopt
 from RPi import GPIO
+from peewee import *
+
+database = MySQLDatabase('my_database')
+
+class BaseModel(Model):
+    class Meta:
+        database = database
+
+class Data(BaseModel):
+    type = CharField()
+    value = IntegerField()
+    created_at = DateTimeField()
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
