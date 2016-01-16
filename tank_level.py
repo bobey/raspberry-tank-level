@@ -18,15 +18,15 @@ if __name__ == '__main__':
     arguments = docopt(__doc__)
     verbose = arguments['-v']
 
-    outputs = [4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22];
+    inputNumbers = [4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22];
  
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
  
-    for i in range(0, 11):
-        GPIO.setup(outputs[i], GPIO.IN)
+    for (i, inputNumber) in enumerate(inputNumbers):
+        GPIO.setup(inputNumber, GPIO.IN)
  
-    for i in range(0, 11):
+    for (i, inputNumber) in enumerate(inputNumbers):
  
        if (i == 0):
           P = "100"
@@ -52,13 +52,13 @@ if __name__ == '__main__':
           P = "  3"
  
  
-       if GPIO.input(outputs[i]) == False:
+       if GPIO.input(inputNumber) == False:
            if verbose :
-               print "  ",P,"%   |          |     GPIO ",outputs[i]
+               print "  ",P,"%   |          |     GPIO ",inputNumber
            else:
                print "  ",P,"%   |          |"
        else:
            if verbose :
-              print "  ",P,"%   |##########|     GPIO ",outputs[i]
+              print "  ",P,"%   |##########|     GPIO ",inputNumber
            else:
               print "  ",P,"%   |##########|"
