@@ -1,21 +1,31 @@
 """Water tank level
 
 Usage:
-  tank_level.py [-vsh]
+  tank_level.py [-vsh] [--database-url=DB_URL]
 
 Retrieve water tank current level and optionnaly store it in database.
 
 Options:
-  -h --help  show this help message and quit
-  -v         verbose mode
-  -s         store in database
+  -h --help              show this help message and quit
+  -v                     verbose mode
+  -s                     store in database
+  --database-url=DB_URL  the database url to connect to (mysql://user:passwd@ip:port/my_db)
 """
 
+from datetime import datetime
 from docopt import docopt
 from RPi import GPIO
 from peewee import *
+from playhouse.db_url import connect
 
-database = MySQLDatabase('my_database')
+arguments = docopt(__doc__)
+verbose = arguments['-v']
+storeToDB = arguments['-s']
+databaseUrl = arguments['--database-url'] or 'sqlite:///default.db'
+
+database = connect(databaseUrl)
+
+inputNumbers = [4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22]
 
 class BaseModel(Model):
     class Meta:
@@ -26,51 +36,45 @@ class Data(BaseModel):
     value = IntegerField()
     created_at = DateTimeField()
 
-if __name__ == '__main__':
-    arguments = docopt(__doc__)
-    verbose = arguments['-v']
+def setup_gpio():
 
-    inputNumbers = [4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22];
- 
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
- 
+
     for (i, inputNumber) in enumerate(inputNumbers):
         GPIO.setup(inputNumber, GPIO.IN)
- 
+
+def get_level_from_index(index):
+    if index == 10:
+        return 3
+
+    return 100 - index * 10
+
+def display_tank_level():
     for (i, inputNumber) in enumerate(inputNumbers):
- 
-       if (i == 0):
-          P = "100"
-       elif (i == 1):
-          P = " 90"
-       elif (i == 2):
-          P = " 80"
-       elif (i == 3):
-          P = " 70"
-       elif (i == 4):
-          P = " 60"
-       elif (i == 5):
-          P = " 50"
-       elif (i == 6):
-          P = " 40"
-       elif (i == 7):
-          P = " 30"
-       elif (i == 8):
-          P = " 20"
-       elif (i == 9):
-          P = " 10"
-       elif (i == 10):
-          P = "  3"
- 
+       P = format(get_level_from_index(i), ' 4') 
  
        if GPIO.input(inputNumber) == False:
-           if verbose :
-               print "  ",P,"%   |          |     GPIO ",inputNumber
-           else:
-               print "  ",P,"%   |          |"
+           print "  ",P,"%   |          |     GPIO ",inputNumber
        else:
-           if verbose :
-              print "  ",P,"%   |##########|     GPIO ",inputNumber
-           else:
-              print "  ",P,"%   |##########|"
+          print "  ",P,"%   |##########|     GPIO ",inputNumber
+
+def get_current_level():
+    for (i, inputNumber) in enumerate(inputNumbers):
+        if GPIO.input(inputNumber):
+            return get_level_from_index(i)
+
+    return 0
+
+def store_to_database():
+    data = Data.create(type='filling', value=get_current_level(), created_at=datetime.now())
+
+if __name__ == '__main__':
+
+    setup_gpio()
+
+    if storeToDB:
+        store_to_database()
+
+    if verbose:
+        display_tank_level()
