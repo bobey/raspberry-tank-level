@@ -18,7 +18,7 @@ You probably want to plan this script execution every few hours to collect worka
 Add the following in some of your Raspberry PI crontab:
 
 ```
-* */6 * * * /usr/bin/python2.7 /path/to/tank_level.py --database-url=mysql://user:passwd@ip:port/my_db -vs >/dev/null 2>&1
+* */6 * * * /usr/bin/python2.7 /path/to/tank_level.py --database-url=mysql://user:passwd@ip:port/my_db -s >/dev/null 2>&1
 ```
 
 After a few months of execution, you should be able to extract some nice graphs as the following:
