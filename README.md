@@ -14,6 +14,13 @@ Basic command line script in Python to retrieve tank level with Raspberry and op
   --database-url=DB_URL  the database url to connect to (mysql://user:passwd@ip:port/my_db)
 ```
 
+
+After a few months of execution, you should be able to extract some nice graphs as the following:
+
+![Raspberry tank level graph visualization](https://raw.githubusercontent.com/bobey/raspberry-tank-level/master/assets/tank_level_raspberry.png)
+
+For those asking, I chose to visualize data with [Metabase](http://www.metabase.com/) simple BI tool.
+
 ## Requirements
 
 - PyMysql or equivalent
