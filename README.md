@@ -34,4 +34,4 @@ For those asking, I chose to visualize data with [Metabase](http://www.metabase.
 
 ## Credits
 
-Inspired by [Frederic JELMONI project](http://www.fred-j.org/?p=364)
+Inspired by [Frederic JELMONI](http://www.fred-j.org/?p=364) project
