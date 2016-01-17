@@ -14,6 +14,12 @@ Basic command line script in Python to retrieve tank level with Raspberry and op
   --database-url=DB_URL  the database url to connect to (mysql://user:passwd@ip:port/my_db)
 ```
 
+You probably want to plan this script execution every few hours to collect workable data.
+Add the following in some of your Raspberry PI crontab:
+
+```
+* */6 * * * /usr/bin/python2.7 /path/to/tank_level.py --database-url=mysql://user:passwd@ip:port/my_db -vs >/dev/null 2>&1
+```
 
 After a few months of execution, you should be able to extract some nice graphs as the following:
 
