@@ -41,7 +41,7 @@ def setup_gpio():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
-    for (i, inputNumber) in enumerate(inputNumbers):
+    for inputNumber in inputNumbers:
         GPIO.setup(inputNumber, GPIO.IN)
 
 def get_level_from_index(index):
@@ -51,18 +51,23 @@ def get_level_from_index(index):
     return 100 - index * 10
 
 def display_tank_level():
-    for (i, inputNumber) in enumerate(inputNumbers):
-       P = format(get_level_from_index(i), ' 4') 
+    currentLevel = get_current_level()
+
+    print currentLevel
+
+    for (index, inputNumber) in enumerate(inputNumbers):
+       indexLevel = get_level_from_index(index)
+       percent = format(indexLevel, ' 4')
  
-       if GPIO.input(inputNumber) == False:
-           print "  ",P,"%   |          |     GPIO ",inputNumber
+       if currentLevel < indexLevel:
+           print "  ", percent, "%   |          |     GPIO ", inputNumber
        else:
-          print "  ",P,"%   |##########|     GPIO ",inputNumber
+           print "  ", percent, "%   |##########|     GPIO ", inputNumber
 
 def get_current_level():
-    for (i, inputNumber) in enumerate(inputNumbers):
+    for (index, inputNumber) in enumerate(inputNumbers):
         if GPIO.input(inputNumber):
-            return get_level_from_index(i)
+            return get_level_from_index(index)
 
     return 0
 
